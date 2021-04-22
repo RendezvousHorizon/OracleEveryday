@@ -1,0 +1,45 @@
+DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS post;
+DROP TABLE IF EXISTS oracle;
+DROP TABLE IF EXISTS question;
+DROP TABLE IF EXISTS wrong_question;
+
+CREATE TABLE user (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL
+);
+
+-- To be deleted.
+CREATE TABLE post (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  author_id INTEGER NOT NULL,
+  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  title TEXT NOT NULL,
+  body TEXT NOT NULL,
+  FOREIGN KEY (author_id) REFERENCES user (id)
+);
+
+CREATE TABLE oracle (
+	id	INTEGER PRIMARY KEY AUTOINCREMENT,
+	img	TEXT NOT NULL UNIQUE,
+	name TEXT NOT NULL
+);
+
+CREATE TABLE question (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    img	TEXT,
+    a TEXT NOT NULL,
+    b TEXT NOT NULL,
+    c TEXT NOT NULL,
+    d TEXT NOT NULL,
+    FOREIGN KEY (img) REFERENCES oracle (img)
+);
+
+CREATE TABLE wrong_question (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    question_id INTEGER,
+    FOREIGN KEY (user_id) REFERENCES user (id),
+    FOREIGN KEY (question_id) REFERENCES question (id)
+);

@@ -1,0 +1,4 @@
+include flaskr/schema.sql
+include flaskr/oracle.sql
+include flaskr/question.sql
+global-exclude *.pyc
