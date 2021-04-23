@@ -1,7 +1,7 @@
 *.jpg
 oracle-images/
 *.csv
-instance/
+#instance/
 
 *.pyc
 __pycache__/
@@ -20,3 +20,4 @@ tmp.py
 tests
 setup.cfg
 setup.py
+MANIFEST.in
