@@ -17,6 +17,9 @@ conda activate web
 pip install -r requirements.txt
 
 # 第一次运行时需要初始化一下数据库
+# 首先需要设置一下环境变量
+export FLASK_APP=flaskr (Linux)
+set FLASK_APP=flaskr (Windows)
 flask init-db
 
 # 运行
