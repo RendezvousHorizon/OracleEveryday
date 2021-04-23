@@ -1,7 +1,7 @@
 *.jpg
-oracle-images/
+#oracle-images/
 *.csv
-#instance/
+instance/
 
 *.pyc
 __pycache__/
@@ -21,3 +21,5 @@ tests
 setup.cfg
 setup.py
 MANIFEST.in
+wsgi.py
+Procfile
