@@ -6,8 +6,8 @@ from werkzeug.exceptions import abort
 from werkzeug.utils import secure_filename
 from .utils import recognize, image2base64
 
-from flaskr.auth import login_required
-from flaskr.db import get_db
+from .auth import login_required
+from .db import get_db
 import os
 
 bp = Blueprint('service', __name__)
