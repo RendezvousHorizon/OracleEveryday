@@ -7,17 +7,9 @@ DROP TABLE IF EXISTS wrong_question;
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT UNIQUE NOT NULL,
-  password TEXT NOT NULL
-);
-
--- To be deleted.
-CREATE TABLE post (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  author_id INTEGER NOT NULL,
-  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  title TEXT NOT NULL,
-  body TEXT NOT NULL,
-  FOREIGN KEY (author_id) REFERENCES user (id)
+  password TEXT NOT NULL,
+  num_questions_per_time INTEGER DEFAULT 30,
+  next_question_id INTEGER DEFAULT 0
 );
 
 CREATE TABLE oracle (

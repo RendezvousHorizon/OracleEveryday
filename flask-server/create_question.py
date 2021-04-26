@@ -36,15 +36,7 @@ def get_similarity(image1, image2):
     return cv2.matchShapes(image1, image2, cv2.CONTOURS_MATCH_I2, 0)
 
 
-def get_top3(image_path):
-    im0 = read_and_convert_to_binary(image_path)
-    im0_name = sql_query('SELECT name FROM Oracle WHERE img="{}"'.format(os.path.basename(image_path))).fetchone()
-    if im0_name is None:
-        return None
-    im0_name = im0_name[0][0]
-
-    name_image_list = sql_query('SELECT name, img FROM Oracle').fetchall()
-
+def get_top3(im0, im0_name, name_image_list):
     cand_list = []
     threshold = 1e10
     cand = None
@@ -67,7 +59,7 @@ def get_top3(image_path):
 
 
 def create_questions():
-    name_image_list = sql_query('SELECT name, img FROM Oracle').fetchall()
+    name_image_list = sql_query('SELECT name, img FROM oracle').fetchall()
     questions = []
     count = 0
     prev_name = None
@@ -75,11 +67,13 @@ def create_questions():
         if name == prev_name:
             continue
         prev_name = name
-        cand_list = get_top3(os.path.join(image_dir, image_name))
+        image = read_and_convert_to_binary(os.path.join(image_dir, image_name))
+        cand_list = get_top3(image, name, name_image_list)
         if cand_list is not None:
             questions.append([image_name, name, cand_list[0][0], cand_list[1][0], cand_list[2][0]])
         count = count + 1
-        if count > 30:
+        print(count, questions[-1])
+        if count > 1000:
             break
 
     # save as sql file

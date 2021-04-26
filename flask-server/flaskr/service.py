@@ -44,15 +44,17 @@ def upload_wrong_question():
     question_id = query_parameters.get('question_id')
     user_id = g.user['id']
     db = get_db()
-    db.executescript('INSERT INTO wrong_question (user_id, question_id) VALUES ({}, {})'\
+    db.execute('INSERT INTO wrong_question (user_id, question_id) VALUES ({}, {})'\
                      .format(user_id, question_id))
     return 'upload success'
 
 
 @bp.route('/question', methods=['GET'])
+@login_required
 def get_question():
     db = get_db()
-    questions = db.execute('SELECT * FROM question LIMIT 10').fetchall()
+    num_questions = db.execute('SELECT num_questions_per_time FROM user WHERE id = {}'.format(g.user['id'])).fetchone()
+    questions = db.execute('SELECT * FROM question LIMIT {}'.format(num_questions)).fetchall()
     print('questions: ', questions)
     rv = []
     for q in questions:
@@ -70,3 +72,21 @@ def get_question():
         rv.append(tuple)
     print(rv)
     return jsonify(rv)
+
+
+@bp.route('/num_questions', methods=['GET', 'POST'])
+@login_required
+def set_num_questions():
+    if request.method == 'POST':
+        query_parameters = request.args
+        num_questions = query_parameters.get('num_questions')
+        db = get_db()
+        db.execute('UPDATE user SET num_questions_per_time = {} WHERE id = {}'.format(num_questions, g.user['id']))
+        db.commit()
+        return 'success'
+    else:
+        query_parameters = request.args
+        db = get_db()
+        num_questions = db.execute('SELECT num_questions_per_time FROM user WHERE id = {}'
+                                   .format((g.user['id']))).fetchone()['num_questions_per_time']
+        return str(num_questions)

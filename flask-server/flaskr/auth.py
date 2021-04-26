@@ -10,13 +10,14 @@ from .db import get_db
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
-@bp.route('/register', methods=('GET', 'POST'))
+@bp.route('/register', methods=['POST'])
 def register():
+    error = None
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        query_params = request.args
+        username = query_params.get('username')
+        password = query_params.get('password')
         db = get_db()
-        error = None
 
         if not username:
             error = 'Username is required.'
