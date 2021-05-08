@@ -24,3 +24,5 @@ Procfile
 
 train_image.zip
 train_image/
+
+model.state_dict.pyc
