@@ -14,7 +14,7 @@ bp = Blueprint('service', __name__)
 
 
 @bp.route('/oracle_recognition', methods=['GET'])
-def oracle_recognition(api=False):
+def oracle_recognition():
     image = request.files['image']
     image_name = secure_filename(image.filename)
     name = recognize(image)
@@ -22,7 +22,7 @@ def oracle_recognition(api=False):
 
 
 @bp.route('/oracle_search', methods=['GET'])
-def oracle_search(api=False):
+def oracle_search():
     query_parameters = request.args
     name = query_parameters.get('name')
 
@@ -44,8 +44,8 @@ def upload_wrong_question():
     question_id = query_parameters.get('question_id')
     user_id = g.user['id']
     db = get_db()
-    db.execute('INSERT INTO wrong_question (user_id, question_id) VALUES ({}, {})'\
-                     .format(user_id, question_id))
+    db.execute('INSERT INTO wrong_question (user_id, question_id) VALUES ({}, {})' \
+               .format(user_id, question_id))
     return 'upload success'
 
 
@@ -54,8 +54,9 @@ def upload_wrong_question():
 def get_question():
     db = get_db()
     num_questions = db.execute('SELECT num_questions_per_time FROM user WHERE id = {}'.format(g.user['id'])).fetchone()
-    questions = db.execute('SELECT * FROM question LIMIT {}'.format(num_questions)).fetchall()
-    print('questions: ', questions)
+    next_question_id = db.execute('SELECT next_question_id FROM user WHERE id = {}'.format(g.user['id'])).fetchone()
+    questions = db.execute('SELECT * FROM question WHERE id >= {} AND id < {}'.format(next_question_id,
+                                                                                      next_question_id + num_questions)).fetchall()
     rv = []
     for q in questions:
         image_path = os.path.join(current_app.config['IMAGE_PATH'], q['img'])
@@ -70,13 +71,12 @@ def get_question():
             'd': q['d'],
         }
         rv.append(tuple)
-    print(rv)
     return jsonify(rv)
 
 
 @bp.route('/num_questions', methods=['GET', 'POST'])
 @login_required
-def set_num_questions():
+def num_questions():
     if request.method == 'POST':
         query_parameters = request.args
         num_questions = query_parameters.get('num_questions')
@@ -90,3 +90,20 @@ def set_num_questions():
         num_questions = db.execute('SELECT num_questions_per_time FROM user WHERE id = {}'
                                    .format((g.user['id']))).fetchone()['num_questions_per_time']
         return str(num_questions)
+
+
+@bp.route('/next_question_id', methods=['GET, POST'])
+@login_required
+def next_question_id():
+    if request.method == 'POST':
+        query_parameters = request.args
+        next_question_id = query_parameters.get('next_question_id')
+        db = get_db()
+        db.execute('UPDATE user SET next_question_id = {} WHERE id = {}'.format(next_question_id, g.user['id']))
+        db.commit()
+        return 'success'
+    else:
+        db = get_db()
+        next_question_id = db.execute('SELECT next_question_id FROM user WHERE id = {}'
+                                      .format((g.user['id']))).fetchone()['next_question_id']
+        return str(next_question_id)
