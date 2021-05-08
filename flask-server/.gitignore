@@ -1,5 +1,4 @@
 oracle-images/
-*.csv
 instance/
 
 *.pyc
@@ -22,3 +21,6 @@ setup.py
 MANIFEST.in
 wsgi.py
 Procfile
+
+train_image.zip
+train_image/

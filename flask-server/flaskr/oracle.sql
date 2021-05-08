@@ -1,4 +1,5 @@
 BEGIN TRANSACTION;
+DROP TABLE IF EXISTS "oracle";
 CREATE TABLE IF NOT EXISTS "oracle" (
 	"id"	INTEGER PRIMARY KEY AUTOINCREMENT,
 	"img"	TEXT NOT NULL UNIQUE,
@@ -1606,4 +1607,16 @@ INSERT INTO "oracle" VALUES (1599,'5023651.jpg','祖');
 INSERT INTO "oracle" VALUES (1600,'5026671.jpg','尊');
 INSERT INTO "oracle" VALUES (1601,'5026169.jpg','尊');
 INSERT INTO "oracle" VALUES (1602,'5026696.jpg','左');
+INSERT INTO "oracle" VALUES (1603,'j13740.jpg','來');
+INSERT INTO "oracle" VALUES (1604,'j10093.jpg','叀');
+INSERT INTO "oracle" VALUES (1605,'j15502.jpg','宾');
+INSERT INTO "oracle" VALUES (1606,'j22818.jpg','尞');
+INSERT INTO "oracle" VALUES (1607,'j27761.jpg','弜');
+INSERT INTO "oracle" VALUES (1608,'j03817.jpg','御');
+INSERT INTO "oracle" VALUES (1609,'j03124.jpg','歲');
+INSERT INTO "oracle" VALUES (1610,'j24061.jpg','河');
+INSERT INTO "oracle" VALUES (1611,'j10483.jpg','爭');
+INSERT INTO "oracle" VALUES (1612,'j09169.jpg','羔');
+INSERT INTO "oracle" VALUES (1613,'j15503.jpg','賓');
+INSERT INTO "oracle" VALUES (1614,'j08646.jpg','隻');
 COMMIT;

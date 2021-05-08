@@ -16,12 +16,25 @@ def init_db():
         db.executescript(f.read().decode('utf8'))
 
 
+def update_table_oracle():
+    db = get_db()
+    with current_app.open_resource('oracle.sql') as f:
+        db.executescript(f.read().decode('utf8'))
+
+
 @click.command('init-db')
 @with_appcontext
 def init_db_command():
     """Clear the existing data and create new tables."""
     init_db()
     click.echo('Initialized the database.')
+
+
+@click.command('update-table-oracle')
+@with_appcontext
+def update_table_oracle_command():
+    update_table_oracle()
+    click.echo('Updated the table oracle.')
 
 
 def get_db():
@@ -45,3 +58,4 @@ def close_db(e=None):
 def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
+    app.cli.add_command(update_table_oracle_command)

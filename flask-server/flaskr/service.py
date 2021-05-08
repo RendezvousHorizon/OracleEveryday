@@ -17,8 +17,17 @@ bp = Blueprint('service', __name__)
 def oracle_recognition():
     image = request.files['image']
     image_name = secure_filename(image.filename)
-    name = recognize(image)
-    return name
+    results = recognize(image)
+    rv = []
+    db = get_db()
+    for name in results:
+        tuple = db.execute(
+            'SELECT * FROM oracle WHERE name="{}"'.format(name)
+        ).fetchone()
+        image_path = os.path.join(current_app.config['IMAGE_PATH'], tuple['img'])
+        image_base64 = str(image2base64(image_path))
+        rv.append((name, image_base64))
+    return jsonify(rv)
 
 
 @bp.route('/oracle_search', methods=['GET'])
