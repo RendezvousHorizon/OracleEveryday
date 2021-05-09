@@ -46,16 +46,33 @@ def oracle_search():
     return send_file(image_path, mimetype='image/jpeg')
 
 
-@bp.route('/wrong_question', methods=['POST'])
+@bp.route('/wrong_question', methods=['GET', 'POST'])
 @login_required
-def upload_wrong_question():
-    query_parameters = request.args
-    question_id = query_parameters.get('question_id')
+def wrong_question():
     user_id = g.user['id']
     db = get_db()
-    db.execute('INSERT INTO wrong_question (user_id, question_id) VALUES ({}, {})' \
-               .format(user_id, question_id))
-    return 'upload success'
+    if request.method == 'POST':
+        query_parameters = request.args
+        question_id = query_parameters.get('question_id')
+        db.execute('INSERT INTO wrong_question (user_id, question_id) VALUES ({}, {})' \
+                   .format(user_id, question_id))
+        db.commit()
+        return 'upload success'
+    else:
+        db = get_db()
+        wrong_questions = db.execute('SELECT img, a FROM question WHERE id IN '
+                                     '(SELECT question_id FROM wrong_question WHERE user_id = {})'.format(
+            user_id)).fetchall()
+        rv = []
+        for q in wrong_questions:
+            image_path = os.path.join(current_app.config['IMAGE_PATH'], q['img'])
+            image_base64 = str(image2base64(image_path))
+            tuple = {
+                'image': image_base64,
+                'a': q['a'],
+            }
+            rv.append(tuple)
+        return jsonify(rv)
 
 
 @bp.route('/question', methods=['GET'])
