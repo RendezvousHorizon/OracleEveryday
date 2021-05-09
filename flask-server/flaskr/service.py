@@ -62,8 +62,10 @@ def upload_wrong_question():
 @login_required
 def get_question():
     db = get_db()
-    num_questions = db.execute('SELECT num_questions_per_time FROM user WHERE id = {}'.format(g.user['id'])).fetchone()['num_questions']
-    next_question_id = db.execute('SELECT next_question_id FROM user WHERE id = {}'.format(g.user['id'])).fetchone()['next_question_id']
+    num_questions = db.execute('SELECT num_questions_per_time FROM user WHERE id = {}'
+                               .format(g.user['id'])).fetchone()['num_questions_per_time']
+    next_question_id = db.execute('SELECT next_question_id FROM user WHERE id = {}'
+                                  .format(g.user['id'])).fetchone()['next_question_id']
     questions = db.execute('SELECT * FROM question WHERE id >= {} AND id < {}'.format(next_question_id,
                                                                                       next_question_id + num_questions)).fetchall()
     rv = []
