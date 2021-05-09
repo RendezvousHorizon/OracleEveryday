@@ -71,7 +71,6 @@ def get_question():
     rv = []
     for q in questions:
         image_path = os.path.join(current_app.config['IMAGE_PATH'], q['img'])
-        print(image_path)
         image_base64 = str(image2base64(image_path))
         tuple = {
             'id': q['id'],
