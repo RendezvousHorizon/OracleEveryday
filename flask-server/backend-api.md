@@ -86,7 +86,7 @@ HttpResponse<String> response = Unirest.post("http://127.0.0.1:5000/auth/registe
 
      (id是题目id， 可以用来上传错题)。
 
-**(2)上传错题**
+**(2.1)上传错题**
 
 * 需要先登录
 
@@ -102,6 +102,18 @@ HttpResponse<String> response = Unirest.post("http://127.0.0.1:5000/auth/registe
 * 返回值
 
   * 上传成功: 'success'
+  
+**(2.2)获取错题**
+
+* 需要先登录
+
+* url: ```http:ip_addr:port/wrong_question```
+
+* method: GET
+
+* 参数: 无
+
+* 返回值: 用户错题的json列表，每个元素为(image, a, b, c, d)的字典。
 
 **(3)设置每次的做题数**
 

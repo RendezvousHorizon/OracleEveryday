@@ -70,6 +70,9 @@ def wrong_question():
             tuple = {
                 'image': image_base64,
                 'a': q['a'],
+                'b': q['b'],
+                'c': q['c'],
+                'd': q['d'],
             }
             rv.append(tuple)
         return jsonify(rv)
