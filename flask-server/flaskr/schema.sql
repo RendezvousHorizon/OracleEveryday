@@ -9,7 +9,7 @@ CREATE TABLE user (
   username TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL,
   num_questions_per_time INTEGER DEFAULT 30,
-  next_question_id INTEGER DEFAULT 0
+  next_question_id INTEGER DEFAULT 1
 );
 
 CREATE TABLE oracle (

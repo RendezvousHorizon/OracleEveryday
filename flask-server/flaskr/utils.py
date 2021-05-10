@@ -24,21 +24,21 @@ def load_image(img_path):
     return image_data
 
 
-def predict(data, num_cand = 4):
+def predict(data, num_cands):
     data = data.unsqueeze(0)
     logits = model(data)[0]
     preds = [(i, logits[i]) for i in range(len(logits))]
     preds.sort(key=lambda x : x[1], reverse=True)
-    preds = [preds[i] for i in range(num_cand)]
-    print('preds:', preds)
+    # print('preds:', preds)
+    preds = preds[0: num_cands]
     f = pd.read_csv(LABEL_PATH, header=None)
     result = [f[f[4] == pred[0]][2].values[0] for pred in preds]
     return result
 
 
-def recognize(image_file):
+def recognize(image_file, num_cands = 4):
     image_data = load_image(image_file)
-    results = predict(image_data)
+    results = predict(image_data, num_cands)
     return results
 
 

@@ -47,9 +47,10 @@ HttpResponse<String> response = Unirest.post("http://127.0.0.1:5000/auth/registe
 * 参数
 
   * image: 一张图片
-  * method: GET
-  * 返回值：
-    * 一个长为4的json列表，每个元素为(name, image)二元组，name为预测出的候选汉字，image为此汉字对应甲骨文图片的base64编码。
+  * num_cands(可选): 返回的候选预测结果的个数，默认为4
+* method: GET, POST 
+* 返回值：  
+    * 一个长为num_cands的json列表，每个元素为(name, image)二元组，name为预测出的候选汉字，image为此汉字对应甲骨文图片的base64编码。
 
   ```java
   // Java--Unirest的代码示例
@@ -71,7 +72,7 @@ HttpResponse<String> response = Unirest.post("http://127.0.0.1:5000/auth/registe
 
 #### 4. 甲骨文识记
 
-**(1)获取题目**
+**(1.1)获取题目**
 
 * 需要先登录
 
@@ -85,6 +86,18 @@ HttpResponse<String> response = Unirest.post("http://127.0.0.1:5000/auth/registe
   * 一个json格式的题目列表，每个题目是一个字典，key为 (id, image, a, b, c, d), 其中a为正确答案。
 
      (id是题目id， 可以用来上传错题)。
+  
+**(1.2)根据id获取题目**
+
+* 需要先登录
+
+* url: ```http:ip_addr:port/question_by_id```
+
+* method: GET
+
+* 参数: question_id: int (>=1)
+
+* 返回值: 长度为1的json列表，每个题目是一个字典，key为 (id, image, a, b, c, d)。
 
 **(2.1)上传错题**
 
@@ -115,7 +128,8 @@ HttpResponse<String> response = Unirest.post("http://127.0.0.1:5000/auth/registe
 
 * 返回值: 用户错题的json列表，每个元素为(image, a, b, c, d)的字典。
 
-**(3)设置每次的做题数**
+
+**(3)设置/获取每次的做题数**
 
 * 需要先登录
 * url: ```http:ip_addr:port/num_questions```
@@ -126,7 +140,7 @@ HttpResponse<String> response = Unirest.post("http://127.0.0.1:5000/auth/registe
   * GET: int num_questions
   * POST: 'success'
 
-**(3)设置下一次做题开始的题目id**
+**(4)设置/获取下一次做题开始的题目id**
 
 * 需要先登录
   * url: ```http:ip_addr:port/next_question_id```

@@ -13,11 +13,22 @@ import os
 bp = Blueprint('service', __name__)
 
 
-@bp.route('/oracle_recognition', methods=['GET'])
+@bp.route('/oracle_recognition', methods=['GET', 'POST'])
 def oracle_recognition():
+    # get parameters
+    query_parameters = request.args
+    num_cands = query_parameters.get('num_cands')
+    imagebase64 = query_parameters.get('image')
+
+    if num_cands is None:
+        num_cands = 4
+    num_cands = int(num_cands)
+    print(num_cands)
+
+    # get image file
     image = request.files['image']
-    image_name = secure_filename(image.filename)
-    results = recognize(image)
+
+    results = recognize(image, num_cands)
     rv = []
     db = get_db()
     for name in results:
@@ -90,6 +101,29 @@ def get_question():
                                                                                       next_question_id + num_questions)).fetchall()
     rv = []
     for q in questions:
+        image_path = os.path.join(current_app.config['IMAGE_PATH'], q['img'])
+        image_base64 = str(image2base64(image_path))
+        tuple = {
+            'id': q['id'],
+            'image': image_base64,
+            'a': q['a'],
+            'b': q['b'],
+            'c': q['c'],
+            'd': q['d'],
+        }
+        rv.append(tuple)
+    return jsonify(rv)
+
+
+@bp.route('/question_by_id', methods=['GET'])
+@login_required
+def get_question_by_id():
+    db = get_db()
+    query_parameters = request.args
+    question_id = query_parameters.get('question_id')
+    question = db.execute('SELECT * FROM question WHERE id = {} '.format(question_id)).fetchall()
+    rv = []
+    for q in question:
         image_path = os.path.join(current_app.config['IMAGE_PATH'], q['img'])
         image_base64 = str(image2base64(image_path))
         tuple = {
