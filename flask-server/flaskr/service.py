@@ -65,13 +65,17 @@ def wrong_question():
     if request.method == 'POST':
         query_parameters = request.args
         question_id = query_parameters.get('question_id')
-        db.execute('INSERT INTO wrong_question (user_id, question_id) VALUES ({}, {})' \
-                   .format(user_id, question_id))
-        db.commit()
-        return 'upload success'
+        old_q = db.execute('SELECT * FROM wrong_question WHERE user_id = {} AND question_id = {}'.format(user_id, question_id)).fetchall()
+        if len(old_q) == 0:
+            db.execute('INSERT INTO wrong_question (user_id, question_id) VALUES ({}, {})' \
+                       .format(user_id, question_id))
+            db.commit()
+            return 'Upload success.'
+        else:
+            return 'Question already exists.'
     else:
         db = get_db()
-        wrong_questions = db.execute('SELECT img, a FROM question WHERE id IN '
+        wrong_questions = db.execute('SELECT img, a, b, c, d FROM question WHERE id IN '
                                      '(SELECT question_id FROM wrong_question WHERE user_id = {})'.format(
             user_id)).fetchall()
         rv = []

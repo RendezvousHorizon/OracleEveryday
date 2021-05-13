@@ -28,3 +28,5 @@ train_image/
 model.state_dict
 
 nohup.out
+
+*.log
